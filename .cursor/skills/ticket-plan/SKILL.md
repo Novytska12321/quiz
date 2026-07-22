@@ -24,6 +24,7 @@ Given an issue reference (e.g. `#123` or a GitHub URL), retrieve it with GitHub 
 Before scoping work, read:
 
 - `.cursor/AGENTS.md` — repo conventions, folder layout, commands
+- `.cursor/docs/frontend/react-module-architecture.md` — View module layering and naming
 - `.cursor/docs/integrations/` — integration docs relevant to the issue (e.g. `open-trivia-db.md`)
 
 ### 2. Fetch issue context
@@ -49,10 +50,10 @@ If ambiguous, ask 1–3 concrete questions before coding.
 
 Identify impacted areas:
 
-- views (`src/views/`)
-- routing (`src/App.tsx`) — remember `basename` and `base: '/quiz/'`
-- shared UI (`src/components/` — create when needed)
-- API layer (`src/api/` — per integration docs)
+- View modules (`src/views/<name>/`) — follow `.cursor/docs/frontend/react-module-architecture.md`
+- routing (`src/app/App.tsx`) — remember `basename` and `base: '/quiz/'`
+- root providers (`src/app/providers.tsx`)
+- shared code (`src/shared/`)
 - global styles (`src/index.css`)
 - build / deploy (`vite.config.ts`, `.github/workflows/deploy.yml`)
 - typings (`tsconfig*.json`)

@@ -1,73 +1,42 @@
-# React + TypeScript + Vite
+# Quiz App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A trivia quiz built with React 19, TypeScript, Vite, React Router, and Tailwind CSS. Deployed to GitHub Pages at `/quiz/`.
 
-Currently, two official plugins are available:
+## Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Scripts
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Command              | Description                    |
+| -------------------- | ------------------------------ |
+| `npm run dev`        | Start dev server with HMR      |
+| `npm run build`      | Type-check and production build |
+| `npm run preview`    | Preview production build       |
+| `npm run lint`       | Run ESLint                     |
+| `npm run format`     | Format with Prettier           |
+| `npm run format:check` | Check formatting             |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project Structure
+
+Frontend code follows the **View module architecture** (see `.cursor/docs/frontend/react-module-architecture.md`):
+
+```text
+src/
+├── app/          # router, root providers
+├── shared/       # cross-View components, hooks, utils
+└── views/        # one folder per screen (vertical slice)
+    ├── home/
+    └── game/
 ```
+
+Each View is a self-contained module. As features grow, add layers inside a View folder: `api/`, `hooks/`, `infrastructure/`, `context/`, `components/`, and optionally `domain/`.
+
+Imports use the `@/` alias (`@` → `src/`).
+
+## Deployment
+
+Pushes to `main` deploy to GitHub Pages via `.github/workflows/deploy.yml`. The Vite `base` path (`/quiz/`) must match the GitHub Pages URL.

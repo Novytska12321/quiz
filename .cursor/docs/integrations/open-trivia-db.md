@@ -8,7 +8,7 @@ Concise, implementation-oriented guidance for integrating [Open Trivia DB](https
 
 ## Purpose
 
-Open Trivia DB supplies free trivia questions (multiple choice and true/false) used by the Game view. All HTTP access should go through the project's API abstraction layer (e.g. `src/api/` or equivalent), not directly from React components.
+Open Trivia DB supplies free trivia questions (multiple choice and true/false) used by the Game view. All HTTP access goes through the Game View's resource port (`TriviaResource` in `src/views/game/api/`) — not directly from UI components.
 
 ## Base URL
 
@@ -100,24 +100,38 @@ Every questions response includes `response_code`. Always validate it before usi
 
 When implementing or changing Open Trivia DB usage in this repo:
 
-- Call the API only through the project's API abstraction layer; keep `fetch` / HTTP details out of views and components.
+- Call the API only through the Game View's resource port; keep `fetch` / HTTP details out of `GameView.tsx` and presentational components.
 - Decode HTML entities (or use an explicit `encode` mode and decode accordingly) before showing questions and answers.
 - Shuffle the answer list before presenting it; keep track of which option is correct after shuffling.
 - Use Session Tokens to prevent duplicate questions across a play session.
 - Support request cancellation (`AbortSignal`) for in-flight fetches when the user navigates away or starts a new game.
 - Always check `response_code` and map non-zero codes to clear UI / error states.
 - Use strongly typed TypeScript models for requests, responses, and domain entities (`Question`, `Category`, `SessionToken`).
-- Keep side effects (network, token storage) in services or Effects / event handlers — never in render.
+- Keep side effects (network, token storage) in hooks, resources, or event handlers — never in render.
 - Style UI with Tailwind; do not introduce new styling systems for API-driven screens.
 
-Suggested module layout (when implementing):
+Suggested module layout inside the Game View (Tier 2+ per `.cursor/docs/frontend/react-module-architecture.md`):
 
 ```text
-src/
+src/views/game/
 ├── api/
-│   └── openTriviaDb.ts      # HTTP calls + response_code handling
-├── models/
-│   └── trivia.ts            # Question, Category, SessionToken types
+│   ├── Question.ts              # read model types
+│   ├── Category.ts
+│   └── TriviaResource.ts        # port interface
+├── infrastructure/
+│   ├── dto/                     # Open Trivia DB JSON shapes
+│   ├── mappers/                 # DTO → API model (decode, shuffle)
+│   └── resources/
+│       ├── createHttpTriviaResource.ts
+│       └── mockTriviaResource.ts
+├── hooks/
+│   ├── triviaQueryKeys.ts
+│   └── useTriviaQuery.ts
+├── context/
+│   └── GameProvider.tsx         # binds TriviaResource port
+└── components/                  # presentational quiz UI
+
+src/shared/                      # only if a second View needs the same code
 └── utils/
     ├── decodeHtml.ts
     └── shuffle.ts

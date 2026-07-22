@@ -1,13 +1,13 @@
 import { BrowserRouter, Route, Routes } from 'react-router'
-import Home from './views/Home'
-import Game from './views/Game'
+import { GameView } from '@/views/game'
+import { HomeView } from '@/views/home'
 
 function App() {
   return (
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/game" element={<Game />} />
+        <Route path="/" element={<HomeView />} />
+        <Route path="/game" element={<GameView />} />
       </Routes>
     </BrowserRouter>
   )

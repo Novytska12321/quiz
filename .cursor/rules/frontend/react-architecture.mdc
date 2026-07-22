@@ -1,0 +1,370 @@
+---
+description: Code organization and View module layering for React + TypeScript applications
+globs:
+  - "**/*.{tsx,jsx}"
+---
+
+# Architecture & Code Organization (React)
+
+For the full View module layer model, tier patterns, folder layout, naming conventions, and examples, see `.cursor/docs/frontend/react-module-architecture.md`.
+
+## Pattern Reuse
+
+- When creating a new hook, provider, or resource, examine sibling Views with the same suffix to match folder placement and API contract
+- When adding to an extensible pattern (providers, cell renderers, resources), name and scope new artifacts at the same category level as siblings, not narrowly for a single use case
+- Prefer reusing existing patterns and registration points (Provider, resource ports, query key factories) over inventing new ones. Check how similar Views are already wired before creating new infrastructure
+
+## Module Layering
+
+- Before adding code to a shared hook or component, verify the layering by checking existing imports. Ensure the change respects the dependency direction
+- `ui` must not import `dto/` or HTTP clients directly — go through hooks
+
+## Hook Responsibility
+
+- Do not add new methods to an existing hook based on a superficial name match. Read the hook's existing return value and callers to verify its actual responsibility
+- Do not couple UI components to an implementation detail (e.g. fetch URL, mock flag) when a stable port (`FooResource`) exists
+
+# Frontend View Architecture (React + TypeScript)
+
+> Architectural patterns for **View + react-ts** projects: each screen or functional area is a **View module** — a self-contained vertical slice with a clear separation of concerns (contract → logic → I/O → UI).
+>
+> **Principle:** use **React idioms** — hooks, Context/Provider, TanStack Query, pure functions, colocation. Do not mirror backend framework mechanics (DI containers, global stores, framework-specific module systems) in the frontend unless the project already standardizes on them.
+
+---
+
+## 1. Layer Model
+
+Each non-trivial View is divided into concentric layers. **api/model is the innermost layer** — the public contract everything else depends on. Dependencies always point **inward**.
+
+```
+┌──────────────────────────────────────────┐
+│                   UI                     │  View entry, presentational components, styles
+│  ┌────────────────────────────────────┐  │
+│  │         HOOKS + CONTEXT            │  │  useXxx hooks, ViewProvider, query keys
+│  │  ┌──────────────────────────────┐  │  │
+│  │  │       INFRASTRUCTURE         │  │  │  resources, DTOs, mappers, mocks
+│  │  │  ┌────────────────────────┐  │  │  │
+│  │  │  │  DOMAIN (optional)     │  │  │  │  Pure business logic, validation rules
+│  │  │  │  ┌──────────────────┐  │  │  │  │
+│  │  │  │  │   API / MODEL      │  │  │  │  │  Types, ports, public contracts
+│  │  │  │  └──────────────────┘  │  │  │  │
+│  │  │  └────────────────────────┘  │  │  │
+│  │  └──────────────────────────────┘  │  │
+│  └────────────────────────────────────┘  │
+└──────────────────────────────────────────┘
+```
+
+### Layer Responsibilities
+
+| Layer | Responsibility | Contains |
+|-------|----------------|----------|
+| **API / MODEL** | Public contract — types and ports the View and its consumers depend on. **Innermost** layer. No React, no fetch, no imports from other View layers. | `type`, `interface`, port interfaces (`FooResource`), constants, events |
+| **DOMAIN** (optional) | Business logic without React or I/O. Imports **only** `api/`. | Pure functions, validation, rules (`*Rules.ts`) |
+| **INFRASTRUCTURE** | Concrete I/O and mapping. Imports `api/` and optionally `domain/`. | `dto/`, `mappers/`, `resources/` (fetch/axios), mocks |
+| **HOOKS + CONTEXT** | State orchestration and dependency wiring in React. Imports `api/`, `infrastructure/`, `domain/`. | `useXxx`, `FooProvider`, query key factories |
+| **UI** | Presentation only. Imports `api/` and hooks — **no** direct fetch, DTOs, or business rules. | `FooView.tsx`, presentational components, colocated subcomponents |
+
+### Dependency Direction Summary
+
+```
+UI  →  HOOKS/CONTEXT  →  INFRASTRUCTURE  →  DOMAIN  →  API/MODEL
+```
+
+- **API/MODEL** has no internal dependencies on other View layers.
+- **DOMAIN** may import **only from API/MODEL**.
+- **INFRASTRUCTURE** may import from **API/MODEL** and **DOMAIN**.
+- **HOOKS/CONTEXT** may import from **API/MODEL**, **DOMAIN**, and **INFRASTRUCTURE** — but not from **UI**.
+- **UI** may import from **API/MODEL** and **hooks** (or receive data via props from a parent that uses hooks).
+
+The **composition root** (`context/FooProvider.tsx`) is the only place that binds port interfaces to concrete resource implementations.
+
+---
+
+## 2. View Module Structure
+
+A **View module** is one folder per screen or cohesive functional area. Keep all layers for that View in one place (vertical slice).
+
+### Recommended layout
+
+```
+src/views/foo/                   # or src/features/foo/
+├── index.ts                     # public barrel — only what other Views/app consume
+├── FooView.tsx                  # View entry — layout, hook wiring, loading/error/empty
+├── api/
+│   ├── Foo.ts                   # read model types
+│   └── FooResource.ts           # port interface
+├── domain/                      # optional
+│   └── validateFoo.ts
+├── infrastructure/
+│   ├── dto/
+│   ├── mappers/
+│   └── resources/
+├── hooks/
+│   ├── fooQueryKeys.ts
+│   ├── useFooQuery.ts
+│   └── useFooViewModel.ts
+├── context/
+│   └── FooProvider.tsx
+└── components/                  # presentational pieces private to this View
+    ├── FooList.tsx
+    └── FooRow.tsx
+```
+
+### App-level shared code
+
+Code reused across multiple Views belongs outside the View folder:
+
+```
+src/
+├── views/                       # View modules (vertical slices)
+├── shared/                      # cross-View UI primitives, utils, types
+│   ├── components/
+│   ├── hooks/
+│   └── api/
+└── app/                         # router, root providers, app shell
+    ├── App.tsx
+    └── providers.tsx
+```
+
+**Rules:**
+
+- A View imports from its own layers and from `shared/` — not from another View's internal folders.
+- Cross-View consumption goes through the other View's `index.ts` public barrel, or through `shared/`.
+- Use the project's path aliases (e.g. `@/views/foo`) — avoid deep relative imports across Views.
+
+### When to split a View
+
+Start with one folder per View. Extract to `shared/` only when a second View genuinely needs the same code. Do not pre-split into multiple packages or micro-libraries prematurely.
+
+---
+
+## 3. Complexity Tiers
+
+Choose the simplest tier that satisfies the View. Add `domain/` only when real business rules emerge.
+
+### Tier 0 — Presentational component
+
+> Use for: stateless UI pieces, layout fragments, no data fetching.
+
+No layers. Props in, JSX out. Lives in `shared/components/` or `views/foo/components/`.
+
+---
+
+### Tier 1 — `ui + hooks`
+
+> Use for: simple Views with props from the host, or a single data source.
+
+```
+Host / Router  →  FooView  →  hooks (optional useQuery)
+```
+
+- State passed via props from the parent, or a single `useQuery` in a dedicated hook.
+- No `domain/` or separate `infrastructure/` folder needed for trivial cases.
+
+---
+
+### Tier 2 — `ui + hooks + infrastructure + api`
+
+> Use for: CRUD screens, load-only Views, DTO mapping without business logic beyond conversion.
+
+```
+FooView  →  hooks  →  API types
+                        ↑
+                INFRASTRUCTURE (resources, mappers, mocks)
+```
+
+- **TanStack Query** in `hooks/` for server state.
+- **No domain layer** — mappers convert DTO → API model directly.
+- Infrastructure must not contain business rules. If logic beyond mapping is needed, promote to Tier 3.
+
+---
+
+### Tier 3 — `ui + hooks + infrastructure + domain + api`
+
+> Use for: validation, conditional branching, multi-step workflows, non-trivial client-side state.
+
+```
+FooView  →  hooks  ──────────→  API/MODEL
+                                  ↑
+                                DOMAIN (pure rules, validation)
+                                  ↑
+                           INFRASTRUCTURE (resources, mappers)
+```
+
+**Example — load with validation before display:**
+
+```
+FooView mounts
+  → useFooViewModel()
+    → useFooQuery()                    ← TanStack Query
+      → fooResource.getList()          ← port (api/)
+            ↑ bound in FooProvider →
+        createHttpFooResource()        ← infrastructure
+          → mapFooListFromDto(dto)     ← mapper
+            → validateFooList(items)   ← domain (pure)
+              → FooView renders
+```
+
+---
+
+## 4. Object Types Across Layers
+
+| Layer | Object Type | Description |
+|-------|-------------|-------------|
+| **API/MODEL** | **API types** | TypeScript `interface` / `type` forming the public contract |
+| **DOMAIN** | **Pure logic** | Functions and rules with no React/fetch imports |
+| **INFRASTRUCTURE** | **DTOs, mappers, resources** | HTTP shapes, pure mapper functions, concrete fetch implementations |
+| **HOOKS** | **View models, query results** | Composed state exposed to UI as plain data and callbacks |
+
+### Mapper Pattern
+
+```
+fooResource.get() → FooResponseDto
+  → mapFooFromDto(dto): Foo          ← infrastructure/mappers/
+    → useFooQuery returns Foo        ← hooks/
+      → FooView renders Foo          ← ui/
+```
+
+Never pass DTOs past the infrastructure boundary. UI and hooks work with API/MODEL types only.
+
+### Resource Chain (HTTP)
+
+```
+FooResource (interface)              ← api/
+  └─ mockFooResource                 ← infrastructure/resources/
+  └─ createHttpFooResource(fetch)    ← infrastructure/resources/
+       └─ returns FooResponseDto     ← infrastructure/dto/
+            └─ mapFooFromDto()       ← infrastructure/mappers/
+```
+
+---
+
+## 5. State & Persistence
+
+| State kind | Mechanism | Where |
+|------------|-----------|-------|
+| **Server state** (fetch, cache, refetch) | TanStack Query (`useQuery`, `useMutation`) | `hooks/` |
+| **UI state** (accordion open, local filter) | `useState` in component or hook | `ui/` or `hooks/` |
+| **View-scoped state** (shared within one View) | `useReducer` + Context, or lightweight Zustand | `hooks/` + `context/` |
+| **URL state** (filters, tabs) | Router `searchParams` / route params | `hooks/` |
+
+### Rules
+
+- **Default to TanStack Query** for API data — avoid `useEffect` + `fetch` without caching.
+- Prefer **local or View-scoped state** over a global store. Introduce a global store only when the project already standardizes on one and the requirement is genuinely cross-cutting.
+- Optimistic updates / local patches — `queryClient.setQueryData` or a dedicated `useReducer` in the hook.
+
+### Hooks folder layout
+
+```
+hooks/
+├── fooQueryKeys.ts         # query key factory: all, list(), detail(id)
+├── useFooQuery.ts          # useQuery + mapper
+├── useFooMutation.ts       # useMutation (when needed)
+└── useFooViewModel.ts      # composes query + UI state for the View
+```
+
+### Query key factory example
+
+```typescript
+export const fooQueryKeys = {
+	all: ['foo'] as const,
+	list: () => [...fooQueryKeys.all, 'list'] as const,
+	detail: (id: string) => [...fooQueryKeys.all, 'detail', id] as const
+};
+```
+
+---
+
+## 6. Composition Root — Provider
+
+The Provider binds ports to concrete implementations without business logic. Mount it at the View boundary or in the app router for that route.
+
+```tsx
+// context/FooProvider.tsx
+export function FooProvider({ resource, labels, children }: FooProviderProps) {
+	const value = useMemo(() => ({ resource, labels }), [resource, labels]);
+	return <FooContext.Provider value={value}>{children}</FooContext.Provider>;
+}
+```
+
+- **One Provider per View** in `context/`.
+- Parent route or app shell passes implementations (`mockFooResource`, `createHttpFooResource(...)`).
+- Provider wires dependencies only — no fetch logic, no validation rules.
+
+---
+
+## 7. UI — View and Components
+
+| Type | Convention | Responsibility |
+|------|------------|----------------|
+| **View** | `FooView.tsx` | Entry point for the screen: layout, connects hooks, handles loading/error/empty |
+| **View model hook** | `useFooViewModel.ts` | Extract when the View grows — composes query + UI state |
+| **Presentational** | `FooList.tsx`, `FooRow.tsx` in `components/` | Props in, JSX out — no fetch, no Context (except design tokens) |
+| **Colocation** | `components/` next to `FooView.tsx` | Subcomponents used only by this View |
+
+### UI rules
+
+- Put logic in **custom hooks**, not in 200-line View files.
+- **One level of abstraction per file** — helpers go in `*.utils.ts` next to the hook or component.
+- Export from `index.ts` only the **public API** (`FooView`, `FooProvider`, types).
+
+---
+
+## 8. Naming Conventions
+
+| Artifact | Convention | Example | Layer |
+|----------|------------|---------|-------|
+| Read model type | `Foo`, `FooItem` | `Order`, `OrderLine` | `api/` |
+| HTTP port | `FooResource` | `interface OrderResource` | `api/` |
+| HTTP implementation | `createHttpFooResource` / `mockFooResource` | factory or object | `infrastructure/resources/` |
+| Mapper | `mapFooFromDto` | pure function | `infrastructure/mappers/` |
+| DTO | `FooResponseDto` | JSON shape | `infrastructure/dto/` |
+| Query hook | `useFooQuery` | | `hooks/` |
+| View model hook | `useFooViewModel` | composes query + UI state | `hooks/` |
+| Provider | `FooProvider` | | `context/` |
+| View | `FooView` | screen entry | root of View folder |
+| Query keys | `fooQueryKeys` | `all`, `list()`, `detail(id)` | `hooks/` |
+| Domain rule | `validateFoo` / `fooRules.ts` | pure function | `domain/` |
+
+---
+
+## 9. Testing
+
+- **Mappers / domain** — unit tests on pure functions (highest ROI).
+- **Hooks** — `renderHook` + `QueryClientProvider` wrapper (React Testing Library).
+- **Views / components** — RTL; mock hooks via props or test doubles on the hooks module.
+
+Use the test runner and conventions configured in the project (e.g. Vitest + RTL).
+
+---
+
+## 10. Complexity Decision Guide
+
+```
+Does the View need data from an API?
+  No  → Tier 0 (presentational) or Tier 1 (props from host)
+  Yes →
+    Is there business logic beyond DTO mapping?
+      No  → Tier 2 (ui + hooks + infrastructure + api)
+      Yes → Tier 3 (add domain/)
+```
+
+Rule of thumb: **start with the simplest tier and promote only when a real business rule emerges.**
+
+---
+
+## 11. Anti-Patterns to Avoid
+
+| Anti-pattern | Correct approach |
+|--------------|------------------|
+| `fetch` in `useEffect` inside a View | `useQuery` in `hooks/` |
+| Importing `dto/` in a component | Mapper in infrastructure; hook returns API model |
+| Business logic in JSX | `domain/` pure function or dedicated hook |
+| App-wide Context for a single View | Scoped `FooProvider` |
+| Global store for View-local state | TanStack Query + local or View-scoped state |
+| God View (300+ lines) | `FooView` + `useFooViewModel` + presentational children |
+| Exporting everything from `index.ts` | Public API only |
+| Importing another View's internals | Import from that View's `index.ts` or `shared/` |
+| Port interfaces declared in `infrastructure/` | Declare ports in `api/`; implement in `infrastructure/` |
+| UI importing HTTP clients directly | UI uses hooks; hooks use resources |
