@@ -70,17 +70,17 @@ Vite config with `@vitejs/plugin-react`, `@tailwindcss/vite`, and path alias `@`
 
 ## Quick Routing
 
-| Agent needs to...                | Go to                                      |
-| -------------------------------- | ------------------------------------------ |
-| Add or change a route            | `src/app/App.tsx`                          |
-| Add root providers               | `src/app/providers.tsx`                    |
-| Edit a page / View               | `src/views/<name>/`                        |
-| Add cross-View shared code       | `src/shared/`                              |
-| Change global styles or Tailwind | `src/index.css`                            |
-| Adjust build or deploy base URL  | `vite.config.ts`                           |
+| Agent needs to...                | Go to                                                |
+| -------------------------------- | ---------------------------------------------------- |
+| Add or change a route            | `src/app/App.tsx`                                    |
+| Add root providers               | `src/app/providers.tsx`                              |
+| Edit a page / View               | `src/views/<name>/`                                  |
+| Add cross-View shared code       | `src/shared/`                                        |
+| Change global styles or Tailwind | `src/index.css`                                      |
+| Adjust build or deploy base URL  | `vite.config.ts`                                     |
 | Check architecture conventions   | `.cursor/docs/frontend/react-module-architecture.md` |
-| Open Trivia DB integration       | `.cursor/docs/integrations/open-trivia-db.md` |
-| Check CI / GitHub Pages deploy   | `.github/workflows/deploy.yml`             |
+| Open Trivia DB integration       | `.cursor/docs/integrations/open-trivia-db.md`        |
+| Check CI / GitHub Pages deploy   | `.github/workflows/deploy.yml`                       |
 
 ## Core Rules
 

@@ -33,10 +33,10 @@ Create a project Cursor skill `draft-to-requirement` that turns a rough feature 
 
 ## Files to change / create
 
-| Path | Action |
-|------|--------|
-| `.cursor/skills/draft-to-requirement/SKILL.md` | create — full skill workflow |
-| `.cursor/requirements/.gitkeep` | create — ensure directory is tracked |
+| Path                                           | Action                               |
+| ---------------------------------------------- | ------------------------------------ |
+| `.cursor/skills/draft-to-requirement/SKILL.md` | create — full skill workflow         |
+| `.cursor/requirements/.gitkeep`                | create — ensure directory is tracked |
 
 ## Local patterns
 

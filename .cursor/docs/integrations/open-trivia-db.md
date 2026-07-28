@@ -28,14 +28,14 @@ No API key or authentication is required. Requests are public. Respect the rate 
 GET /api.php
 ```
 
-| Query param   | Required | Description                                      |
-| ------------- | -------- | ------------------------------------------------ |
-| `amount`      | yes      | Number of questions (`1`–`50`)                   |
-| `category`    | no       | Category id from Get Categories                  |
-| `difficulty`  | no       | `easy`, `medium`, or `hard`                      |
-| `type`        | no       | `multiple` or `boolean`                          |
-| `encode`      | no       | `urlLegacy`, `url3986`, or `base64` (default: HTML entities) |
-| `token`       | no       | Session token to avoid duplicate questions       |
+| Query param  | Required | Description                                                  |
+| ------------ | -------- | ------------------------------------------------------------ |
+| `amount`     | yes      | Number of questions (`1`–`50`)                               |
+| `category`   | no       | Category id from Get Categories                              |
+| `difficulty` | no       | `easy`, `medium`, or `hard`                                  |
+| `type`       | no       | `multiple` or `boolean`                                      |
+| `encode`     | no       | `urlLegacy`, `url3986`, or `base64` (default: HTML entities) |
+| `token`      | no       | Session token to avoid duplicate questions                   |
 
 Example:
 
@@ -67,9 +67,9 @@ GET /api_count_global.php
 
 ### Session Tokens
 
-| Action | Request |
-| ------ | ------- |
-| Request token | `GET /api_token.php?command=request` |
+| Action        | Request                                          |
+| ------------- | ------------------------------------------------ |
+| Request token | `GET /api_token.php?command=request`             |
 | Reset token   | `GET /api_token.php?command=reset&token={token}` |
 
 - Append `token` to Get Questions calls so the API never repeats a question for that session.
@@ -80,13 +80,13 @@ GET /api_count_global.php
 
 Every questions response includes `response_code`. Always validate it before using `results`.
 
-| Code | Name              | Meaning |
-| ---- | ----------------- | ------- |
-| `0`  | Success           | Results returned successfully |
-| `1`  | No Results        | Not enough questions for the query |
-| `2`  | Invalid Parameter | Invalid query arguments |
-| `3`  | Token Not Found   | Session token does not exist |
-| `4`  | Token Empty       | Token exhausted for this query; reset required |
+| Code | Name              | Meaning                                                     |
+| ---- | ----------------- | ----------------------------------------------------------- |
+| `0`  | Success           | Results returned successfully                               |
+| `1`  | No Results        | Not enough questions for the query                          |
+| `2`  | Invalid Parameter | Invalid query arguments                                     |
+| `3`  | Token Not Found   | Session token does not exist                                |
+| `4`  | Token Empty       | Token exhausted for this query; reset required              |
 | `5`  | Rate Limit        | Too many requests; max **1 request per IP every 5 seconds** |
 
 ## Important Notes
@@ -208,33 +208,33 @@ Application-facing models (normalize API payloads into these before UI use):
 
 ### Question
 
-| Field               | Type                         | Notes |
-| ------------------- | ---------------------------- | ----- |
-| `id`                | `string`                     | Client-generated stable id if API has none |
-| `type`              | `'multiple' \| 'boolean'`    | From API `type` |
-| `difficulty`        | `'easy' \| 'medium' \| 'hard'` | From API |
-| `category`          | `string`                     | Category display name from API |
-| `categoryId`        | `number \| null`             | Optional; set when request used a category |
-| `question`          | `string`                     | Decoded question text |
-| `correctAnswer`     | `string`                     | Decoded correct answer |
-| `incorrectAnswers`  | `string[]`                   | Decoded incorrect answers |
-| `answers`           | `string[]`                   | Shuffled options for display |
-| `correctAnswerIndex`| `number`                     | Index of correct option in `answers` |
+| Field                | Type                           | Notes                                      |
+| -------------------- | ------------------------------ | ------------------------------------------ |
+| `id`                 | `string`                       | Client-generated stable id if API has none |
+| `type`               | `'multiple' \| 'boolean'`      | From API `type`                            |
+| `difficulty`         | `'easy' \| 'medium' \| 'hard'` | From API                                   |
+| `category`           | `string`                       | Category display name from API             |
+| `categoryId`         | `number \| null`               | Optional; set when request used a category |
+| `question`           | `string`                       | Decoded question text                      |
+| `correctAnswer`      | `string`                       | Decoded correct answer                     |
+| `incorrectAnswers`   | `string[]`                     | Decoded incorrect answers                  |
+| `answers`            | `string[]`                     | Shuffled options for display               |
+| `correctAnswerIndex` | `number`                       | Index of correct option in `answers`       |
 
 ### Category
 
-| Field  | Type     | Notes |
-| ------ | -------- | ----- |
+| Field  | Type     | Notes                             |
+| ------ | -------- | --------------------------------- |
 | `id`   | `number` | Stable Open Trivia DB category id |
-| `name` | `string` | Display name |
+| `name` | `string` | Display name                      |
 
 ### Session Token
 
-| Field        | Type     | Notes |
-| ------------ | -------- | ----- |
-| `value`      | `string` | Token string from `api_token.php` |
-| `createdAt`  | `number` | Client timestamp (ms) when obtained |
-| `expiresAt`  | `number` | Optional; treat as stale after ~6h inactivity |
+| Field       | Type     | Notes                                         |
+| ----------- | -------- | --------------------------------------------- |
+| `value`     | `string` | Token string from `api_token.php`             |
+| `createdAt` | `number` | Client timestamp (ms) when obtained           |
+| `expiresAt` | `number` | Optional; treat as stale after ~6h inactivity |
 
 ## Known API Limitations
 

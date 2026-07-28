@@ -14,13 +14,13 @@ Dependency direction (always inward):
 UI ──> HOOKS/CONTEXT ──> INFRASTRUCTURE ──> DOMAIN ──> API/MODEL
 ```
 
-| Layer | Contents |
-|-------|----------|
-| **API/MODEL** | Public contract: types, port interfaces (`FooResource`), constants, events. No React, no fetch, no imports from other View layers. |
-| **DOMAIN** (optional) | Pure business logic, validation rules. Imports **only** `api/`. |
-| **INFRASTRUCTURE** | DTOs, mappers (pure functions), resources (fetch/axios), mocks. Imports `api/` + `domain/`. |
-| **HOOKS/CONTEXT** | `useXxx` hooks, `FooProvider`, query key factories. Orchestrates state; binds ports at runtime via Context. |
-| **UI** | `FooView` entry and presentational components. Imports `api/` and hooks — no DTOs, no fetch. |
+| Layer                 | Contents                                                                                                                           |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **API/MODEL**         | Public contract: types, port interfaces (`FooResource`), constants, events. No React, no fetch, no imports from other View layers. |
+| **DOMAIN** (optional) | Pure business logic, validation rules. Imports **only** `api/`.                                                                    |
+| **INFRASTRUCTURE**    | DTOs, mappers (pure functions), resources (fetch/axios), mocks. Imports `api/` + `domain/`.                                        |
+| **HOOKS/CONTEXT**     | `useXxx` hooks, `FooProvider`, query key factories. Orchestrates state; binds ports at runtime via Context.                        |
+| **UI**                | `FooView` entry and presentational components. Imports `api/` and hooks — no DTOs, no fetch.                                       |
 
 ## View module structure
 
@@ -58,12 +58,12 @@ src/
 
 Start with the simplest tier; promote only when a real business rule emerges.
 
-| Tier | Pattern | When |
-|------|---------|------|
-| 0 | Presentational component | Stateless UI, props only |
-| 1 | `ui + hooks` | Simple View, props from host or single fetch |
-| 2 | `ui + hooks + infrastructure + api` | CRUD / load Views, DTO mapping, no logic beyond conversion |
-| 3 | `ui + hooks + infrastructure + domain + api` | Validation, rules, multi-step flows, non-trivial client state |
+| Tier | Pattern                                      | When                                                          |
+| ---- | -------------------------------------------- | ------------------------------------------------------------- |
+| 0    | Presentational component                     | Stateless UI, props only                                      |
+| 1    | `ui + hooks`                                 | Simple View, props from host or single fetch                  |
+| 2    | `ui + hooks + infrastructure + api`          | CRUD / load Views, DTO mapping, no logic beyond conversion    |
+| 3    | `ui + hooks + infrastructure + domain + api` | Validation, rules, multi-step flows, non-trivial client state |
 
 **Tier 2 rule:** mappers convert DTO → API model directly. If logic beyond mapping is needed, promote to Tier 3.
 
@@ -81,11 +81,11 @@ FooView mounts
 
 ## Object types and mappers
 
-| Layer | Types |
-|-------|-------|
-| API/MODEL | Interfaces, read model types, port interfaces |
-| DOMAIN | Pure functions, validation rules |
-| INFRASTRUCTURE | DTOs, mappers, concrete resources |
+| Layer          | Types                                         |
+| -------------- | --------------------------------------------- |
+| API/MODEL      | Interfaces, read model types, port interfaces |
+| DOMAIN         | Pure functions, validation rules              |
+| INFRASTRUCTURE | DTOs, mappers, concrete resources             |
 
 **Mapper chain** — DTOs never cross the infrastructure boundary:
 
@@ -108,12 +108,12 @@ FooResource (interface)           ← api/
 
 ## State placement
 
-| State kind | Mechanism | Where |
-|------------|-----------|-------|
-| Server state | TanStack Query (`useQuery`, `useMutation`) | `hooks/` |
-| UI state | `useState` | `ui/` or `hooks/` |
-| View-scoped state | `useReducer` + Context, or Zustand | `hooks/` + `context/` |
-| URL state | Router `searchParams` / route params | `hooks/` |
+| State kind        | Mechanism                                  | Where                 |
+| ----------------- | ------------------------------------------ | --------------------- |
+| Server state      | TanStack Query (`useQuery`, `useMutation`) | `hooks/`              |
+| UI state          | `useState`                                 | `ui/` or `hooks/`     |
+| View-scoped state | `useReducer` + Context, or Zustand         | `hooks/` + `context/` |
+| URL state         | Router `searchParams` / route params       | `hooks/`              |
 
 **Hooks layout:**
 
@@ -143,42 +143,42 @@ Host route or app shell passes `mockFooResource` or `createHttpFooResource(fetch
 
 ## UI component split
 
-| Type | Convention | Role |
-|------|------------|------|
-| View | `FooView.tsx` | Screen entry: layout, hook wiring, loading/error/empty |
-| Presentational | `FooList.tsx`, `FooRow.tsx` | Props in, JSX out |
-| Colocated | `components/` next to `FooView.tsx` | Subcomponents private to the View |
+| Type           | Convention                          | Role                                                   |
+| -------------- | ----------------------------------- | ------------------------------------------------------ |
+| View           | `FooView.tsx`                       | Screen entry: layout, hook wiring, loading/error/empty |
+| Presentational | `FooList.tsx`, `FooRow.tsx`         | Props in, JSX out                                      |
+| Colocated      | `components/` next to `FooView.tsx` | Subcomponents private to the View                      |
 
 Logic lives in hooks (`useFooViewModel`), not in large View files.
 
 ## Naming conventions
 
-| Artifact | Convention | Example | Layer |
-|----------|------------|---------|-------|
-| Read model | `Foo`, `FooItem` | `Order`, `OrderLine` | `api/` |
-| HTTP port | `FooResource` | `interface OrderResource` | `api/` |
-| HTTP impl | `createHttpFooResource` / `mockFooResource` | factory | `infrastructure/resources/` |
-| Mapper | `mapFooFromDto` | pure function | `infrastructure/mappers/` |
-| DTO | `FooResponseDto` | JSON shape | `infrastructure/dto/` |
-| Query hook | `useFooQuery` | | `hooks/` |
-| View model | `useFooViewModel` | | `hooks/` |
-| Provider | `FooProvider` | | `context/` |
-| View | `FooView` | | root of View folder |
-| Query keys | `fooQueryKeys` | `all`, `list()`, `detail(id)` | `hooks/` |
-| Domain rule | `validateFoo` | pure function | `domain/` |
+| Artifact    | Convention                                  | Example                       | Layer                       |
+| ----------- | ------------------------------------------- | ----------------------------- | --------------------------- |
+| Read model  | `Foo`, `FooItem`                            | `Order`, `OrderLine`          | `api/`                      |
+| HTTP port   | `FooResource`                               | `interface OrderResource`     | `api/`                      |
+| HTTP impl   | `createHttpFooResource` / `mockFooResource` | factory                       | `infrastructure/resources/` |
+| Mapper      | `mapFooFromDto`                             | pure function                 | `infrastructure/mappers/`   |
+| DTO         | `FooResponseDto`                            | JSON shape                    | `infrastructure/dto/`       |
+| Query hook  | `useFooQuery`                               |                               | `hooks/`                    |
+| View model  | `useFooViewModel`                           |                               | `hooks/`                    |
+| Provider    | `FooProvider`                               |                               | `context/`                  |
+| View        | `FooView`                                   |                               | root of View folder         |
+| Query keys  | `fooQueryKeys`                              | `all`, `list()`, `detail(id)` | `hooks/`                    |
+| Domain rule | `validateFoo`                               | pure function                 | `domain/`                   |
 
 ## Anti-patterns
 
-| Don't | Do instead |
-|-------|------------|
-| `fetch` in `useEffect` in a View | `useQuery` in `hooks/` |
-| DTOs in `api/` or `ui/` | Convert at infrastructure boundary via mappers |
-| Port interfaces in `infrastructure/` | Declare in `api/`; implement in `infrastructure/` |
-| Global store for View-local state | TanStack Query + local or View-scoped state |
-| God View (300+ lines) | View + hook + presentational children |
-| App-wide Context for one View | Scoped `FooProvider` |
-| Deep imports into another View's folders | Public `index.ts` or `shared/` |
-| UI importing HTTP clients | UI uses hooks; hooks use resources |
+| Don't                                    | Do instead                                        |
+| ---------------------------------------- | ------------------------------------------------- |
+| `fetch` in `useEffect` in a View         | `useQuery` in `hooks/`                            |
+| DTOs in `api/` or `ui/`                  | Convert at infrastructure boundary via mappers    |
+| Port interfaces in `infrastructure/`     | Declare in `api/`; implement in `infrastructure/` |
+| Global store for View-local state        | TanStack Query + local or View-scoped state       |
+| God View (300+ lines)                    | View + hook + presentational children             |
+| App-wide Context for one View            | Scoped `FooProvider`                              |
+| Deep imports into another View's folders | Public `index.ts` or `shared/`                    |
+| UI importing HTTP clients                | UI uses hooks; hooks use resources                |
 
 ## Example View module (Tier 2)
 

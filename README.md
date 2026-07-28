@@ -11,14 +11,14 @@ npm run dev
 
 ## Scripts
 
-| Command              | Description                    |
-| -------------------- | ------------------------------ |
-| `npm run dev`        | Start dev server with HMR      |
-| `npm run build`      | Type-check and production build |
-| `npm run preview`    | Preview production build       |
-| `npm run lint`       | Run ESLint                     |
-| `npm run format`     | Format with Prettier           |
-| `npm run format:check` | Check formatting             |
+| Command                | Description                     |
+| ---------------------- | ------------------------------- |
+| `npm run dev`          | Start dev server with HMR       |
+| `npm run build`        | Type-check and production build |
+| `npm run preview`      | Preview production build        |
+| `npm run lint`         | Run ESLint                      |
+| `npm run format`       | Format with Prettier            |
+| `npm run format:check` | Check formatting                |
 
 ## Project Structure
 

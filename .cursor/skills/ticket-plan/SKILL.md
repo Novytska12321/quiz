@@ -33,11 +33,11 @@ Resolve `owner` and `repo` from `git remote get-url origin` (currently `Novytska
 
 Use GitHub MCP (`user-github`):
 
-| Tool | Method | Purpose |
-|------|--------|---------|
-| `issue_read` | `get` | title, body, labels, assignees, state |
+| Tool         | Method         | Purpose                                 |
+| ------------ | -------------- | --------------------------------------- |
+| `issue_read` | `get`          | title, body, labels, assignees, state   |
 | `issue_read` | `get_comments` | discussion context (paginate if needed) |
-| `issue_read` | `get_labels` | label details when needed |
+| `issue_read` | `get_labels`   | label details when needed               |
 
 If MCP is unavailable, stop and ask the user to paste issue content.
 

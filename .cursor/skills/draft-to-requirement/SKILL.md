@@ -114,10 +114,10 @@ If the user requests changes, update the requirements file and repeat the approv
 
 ## Output locations
 
-| Item | Path |
-|------|------|
-| This skill | `.cursor/skills/draft-to-requirement/SKILL.md` |
-| Requirements files | `.cursor/requirements/<slug>.md` |
+| Item               | Path                                           |
+| ------------------ | ---------------------------------------------- |
+| This skill         | `.cursor/skills/draft-to-requirement/SKILL.md` |
+| Requirements files | `.cursor/requirements/<slug>.md`               |
 
 ## Notes
 
