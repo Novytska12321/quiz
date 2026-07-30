@@ -41,7 +41,7 @@ Add `/result` in `src/app/App.tsx`. Import Views only via their public `index.ts
 - After the last question’s feedback delay, navigate to `/result` with the final score.
 - **Quit** navigates to `/` without requiring a completed quiz.
 - **Retry** appears only in the error state and re-fetches questions.
-- **Play Again** (when shown on this screen, if used) restarts the quiz with a new fetch; primary Play Again lives on Result.
+- Game View has no **Play Again** control — that action belongs only on Result.
 
 ### Result (`/result`)
 
