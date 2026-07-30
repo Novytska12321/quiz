@@ -1,16 +1,17 @@
 ---
-name: ticket-plan
+name: ticket-to-plan
 description: >-
-  Fetches a GitHub issue via MCP, drafts an implementation plan, and executes it
-  in this Vite + React + TypeScript repo. Use when the user invokes ticket-plan,
-  provides a GitHub issue number or URL, or asks to implement a GitHub issue.
+  Fetches a GitHub issue via MCP and drafts an implementation plan in this
+  Vite + React + TypeScript repo. Use when the user invokes ticket-to-plan,
+  provides a GitHub issue number or URL, or asks to plan work from a GitHub
+  issue. Does not implement code — execution is a separate step.
 ---
 
-Given an issue reference (e.g. `#123` or a GitHub URL), retrieve it with GitHub MCP and deliver implementation end-to-end.
+Given an issue reference (e.g. `#123` or a GitHub URL), retrieve it with GitHub MCP and produce an approved implementation plan. **Stop after plan approval — do not write or change application code.**
 
 ## Inputs
 
-- Issue number or URL, e.g. `ticket-plan #123`
+- Issue number or URL, e.g. `ticket-to-plan #123`
 
 ## Prerequisites
 
@@ -25,6 +26,7 @@ Before scoping work, read:
 
 - `.cursor/AGENTS.md` — repo conventions, folder layout, commands
 - `.cursor/docs/frontend/react-module-architecture.md` — View module layering and naming
+- `.cursor/rules/frontend/react-architecture.mdc` — enforced architecture rules
 - `.cursor/docs/integrations/` — integration docs relevant to the issue (e.g. `open-trivia-db.md`)
 
 ### 2. Fetch issue context
@@ -44,7 +46,7 @@ If MCP is unavailable, stop and ask the user to paste issue content.
 ### 3. Clarify acceptance criteria
 
 Extract explicit and implicit AC from the issue text.
-If ambiguous, ask 1–3 concrete questions before coding.
+If ambiguous, ask 1–3 concrete questions before writing the plan.
 
 ### 4. Scope analysis
 
@@ -72,6 +74,7 @@ Include:
 
 - Type: feature / bugfix / refactor
 - Risk: low / medium / high
+- Source: GitHub issue number and title
 - Files to change
 - Ordered implementation steps
 - Manual verification steps (no automated test suite in this repo)
@@ -79,30 +82,17 @@ Include:
 
 ### 7. Approval gate
 
-Ask the user to approve the plan before implementation.
+Ask the user to approve the plan.
 
-### 8. Execute
+- **Do not implement** any code in this skill — even after approval.
+- When the user approves, confirm the plan is ready and stop.
+- Optionally note that the user can execute the approved plan in a follow-up request.
 
-Implement the approved plan in small steps.
-After each logical step, run the narrowest useful check (`npm run lint`).
-
-### 9. Verify
-
-Run from the repository root:
-
-```bash
-npm run lint
-npm run build        # includes tsc -b
-npm run format:check # when formatting may be affected
-```
-
-Report failures and fix them. Do not run `npm test` — no test script exists.
-
-### 10. Final report
+### 8. Final report
 
 Provide:
 
-- changed files
-- what was implemented vs AC
-- lint / build results
-- residual risks / follow-ups
+- path to the saved plan file
+- summary of scope and key implementation steps
+- how the plan maps to issue acceptance criteria
+- open questions or risks identified during planning
