@@ -16,12 +16,12 @@ In practice, this is a **spec-first workflow**: requirements and plans are the s
 
 ### Workflow
 
-| Stage | Input | Output | Cursor Skill |
-| ----- | ----- | ------ | ------------ |
-| 1. Requirements | Rough draft (any language) | `.cursor/requirements/<slug>.md` (English) | `draft-to-requirement` |
-| 2. Ticket | Approved requirements | GitHub issue (same content as the requirements file) | `draft-to-requirement` (optional step after approval) |
-| 3. Plan | GitHub issue | `.cursor/plans/<issue-number>-<slug>.plan.md` | `ticket-to-plan` |
-| 4. Implementation | Approved plan | Working code in `src/` | *(follow the plan in a follow-up session)* |
+| Stage             | Input                      | Output                                               | Cursor Skill                                          |
+| ----------------- | -------------------------- | ---------------------------------------------------- | ----------------------------------------------------- |
+| 1. Requirements   | Rough draft (any language) | `.cursor/requirements/<slug>.md` (English)           | `draft-to-requirement`                                |
+| 2. Ticket         | Approved requirements      | GitHub issue (same content as the requirements file) | `draft-to-requirement` (optional step after approval) |
+| 3. Plan           | GitHub issue               | `.cursor/plans/<issue-number>-<slug>.plan.md`        | `ticket-to-plan`                                      |
+| 4. Implementation | Approved plan              | Working code in `src/`                               | _(follow the plan in a follow-up session)_            |
 
 Each stage ends with a **review and approval** before moving on. The AI agent reads project context (architecture docs, integrations, rules) so artifacts fit this codebase — not generic web-app advice.
 

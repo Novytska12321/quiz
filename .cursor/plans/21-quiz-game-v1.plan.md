@@ -27,13 +27,13 @@ Implement the end-to-end Quiz Game v1 flow: Home → Game (5 True/False question
 
 ## Planning decisions (defaults)
 
-| Topic | Decision |
-| ----- | -------- |
-| Result with no session | Redirect to `/` (safer than empty state) |
-| Session tokens | Skip for v1 (optional per AC); plain `amount=5&type=boolean` fetch |
-| Score bands | Small domain helper in Result View (e.g. low / mid / high copy) |
-| HTML decode | In Game infrastructure mapper; keep in View until a second consumer needs it |
-| Answer labels | Buttons labeled **True** / **False**; compare against decoded API `correct_answer` (`"True"` / `"False"`) |
+| Topic                  | Decision                                                                                                  |
+| ---------------------- | --------------------------------------------------------------------------------------------------------- |
+| Result with no session | Redirect to `/` (safer than empty state)                                                                  |
+| Session tokens         | Skip for v1 (optional per AC); plain `amount=5&type=boolean` fetch                                        |
+| Score bands            | Small domain helper in Result View (e.g. low / mid / high copy)                                           |
+| HTML decode            | In Game infrastructure mapper; keep in View until a second consumer needs it                              |
+| Answer labels          | Buttons labeled **True** / **False**; compare against decoded API `correct_answer` (`"True"` / `"False"`) |
 
 ## Acceptance criteria (from issue)
 
@@ -55,30 +55,30 @@ Implement the end-to-end Quiz Game v1 flow: Home → Game (5 True/False question
 
 ## Files to change / create
 
-| Path | Action |
-| ---- | ------ |
-| `package.json` / lockfile | add `@tanstack/react-query` |
-| `src/app/providers.tsx` | mount `QueryClientProvider` |
-| `src/app/App.tsx` | add `/result` route; wrap Game route with `GameProvider` if needed |
-| `src/views/home/HomeView.tsx` | app title + **Start Quiz** CTA (replace current START-only screen) |
-| `src/views/game/api/Question.ts` | create — read model |
-| `src/views/game/api/TriviaResource.ts` | create — port interface |
-| `src/views/game/infrastructure/dto/` | create — Open Trivia DB response DTO |
-| `src/views/game/infrastructure/mappers/mapQuestionFromDto.ts` | create — decode + map (shuffle optional for boolean) |
-| `src/views/game/infrastructure/resources/createHttpTriviaResource.ts` | create — `GET /api.php`, `AbortSignal`, `response_code` handling |
-| `src/views/game/infrastructure/resources/mockTriviaResource.ts` | create — optional mock for local/dev |
-| `src/views/game/hooks/triviaQueryKeys.ts` | create |
-| `src/views/game/hooks/useTriviaQuery.ts` | create — TanStack Query for questions |
-| `src/views/game/hooks/useGameViewModel.ts` | create — index, score, answered, 3s advance, navigate to result |
-| `src/views/game/context/GameProvider.tsx` | create — bind `TriviaResource` |
-| `src/views/game/domain/` (optional) | create — e.g. score increment / advance helpers if non-trivial |
-| `src/views/game/components/` | create — question, progress, answer buttons, loading/error UI |
-| `src/views/game/GameView.tsx` | rewrite — wire view model + states |
-| `src/views/game/index.ts` | export `GameView`, `GameProvider` as needed |
-| `src/views/result/ResultView.tsx` | create — score, message, Play Again / Go Home |
-| `src/views/result/domain/scoreMessage.ts` (or similar) | create — score-band copy |
-| `src/views/result/index.ts` | create — public barrel |
-| `src/shared/` | no change unless a second View needs `decodeHtml` |
+| Path                                                                  | Action                                                             |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `package.json` / lockfile                                             | add `@tanstack/react-query`                                        |
+| `src/app/providers.tsx`                                               | mount `QueryClientProvider`                                        |
+| `src/app/App.tsx`                                                     | add `/result` route; wrap Game route with `GameProvider` if needed |
+| `src/views/home/HomeView.tsx`                                         | app title + **Start Quiz** CTA (replace current START-only screen) |
+| `src/views/game/api/Question.ts`                                      | create — read model                                                |
+| `src/views/game/api/TriviaResource.ts`                                | create — port interface                                            |
+| `src/views/game/infrastructure/dto/`                                  | create — Open Trivia DB response DTO                               |
+| `src/views/game/infrastructure/mappers/mapQuestionFromDto.ts`         | create — decode + map (shuffle optional for boolean)               |
+| `src/views/game/infrastructure/resources/createHttpTriviaResource.ts` | create — `GET /api.php`, `AbortSignal`, `response_code` handling   |
+| `src/views/game/infrastructure/resources/mockTriviaResource.ts`       | create — optional mock for local/dev                               |
+| `src/views/game/hooks/triviaQueryKeys.ts`                             | create                                                             |
+| `src/views/game/hooks/useTriviaQuery.ts`                              | create — TanStack Query for questions                              |
+| `src/views/game/hooks/useGameViewModel.ts`                            | create — index, score, answered, 3s advance, navigate to result    |
+| `src/views/game/context/GameProvider.tsx`                             | create — bind `TriviaResource`                                     |
+| `src/views/game/domain/` (optional)                                   | create — e.g. score increment / advance helpers if non-trivial     |
+| `src/views/game/components/`                                          | create — question, progress, answer buttons, loading/error UI      |
+| `src/views/game/GameView.tsx`                                         | rewrite — wire view model + states                                 |
+| `src/views/game/index.ts`                                             | export `GameView`, `GameProvider` as needed                        |
+| `src/views/result/ResultView.tsx`                                     | create — score, message, Play Again / Go Home                      |
+| `src/views/result/domain/scoreMessage.ts` (or similar)                | create — score-band copy                                           |
+| `src/views/result/index.ts`                                           | create — public barrel                                             |
+| `src/shared/`                                                         | no change unless a second View needs `decodeHtml`                  |
 
 ## Local patterns
 

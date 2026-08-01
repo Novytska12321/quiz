@@ -20,7 +20,8 @@ export function AnswerButtons({
         const showResult = selectedAnswer !== null
         const isCorrectOption = answer === correctAnswer
 
-        let tone = 'border-slate-600 bg-slate-800 hover:border-sky-400 hover:bg-slate-700'
+        let tone =
+          'border-slate-600 bg-slate-800 hover:border-sky-400 hover:bg-slate-700'
         if (showResult && isCorrectOption) {
           tone = 'border-emerald-400 bg-emerald-500/20 text-emerald-100'
         } else if (showResult && isSelected && !isCorrectOption) {

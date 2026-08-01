@@ -11,7 +11,10 @@ type GameProviderProps = {
 export function GameProvider({ children, resource }: GameProviderProps) {
   const [defaultResource] = useState(() => createHttpTriviaResource())
   const resolvedResource = resource ?? defaultResource
-  const value = useMemo(() => ({ resource: resolvedResource }), [resolvedResource])
+  const value = useMemo(
+    () => ({ resource: resolvedResource }),
+    [resolvedResource],
+  )
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>
 }

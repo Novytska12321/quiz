@@ -1,4 +1,7 @@
-import type { FetchQuestionsParams, TriviaResource } from '../../api/TriviaResource'
+import type {
+  FetchQuestionsParams,
+  TriviaResource,
+} from '../../api/TriviaResource'
 import type { TriviaQuestionsResponseDto } from '../dto/TriviaQuestionsResponseDto'
 import { mapQuestionFromDto } from '../mappers/mapQuestionFromDto'
 
@@ -14,7 +17,11 @@ const RESPONSE_CODE_MESSAGES: Record<number, string> = {
 
 export function createHttpTriviaResource(): TriviaResource {
   return {
-    async getQuestions({ amount, type = 'boolean', signal }: FetchQuestionsParams) {
+    async getQuestions({
+      amount,
+      type = 'boolean',
+      signal,
+    }: FetchQuestionsParams) {
       const url = new URL(OPENTDB_BASE_URL)
       url.searchParams.set('amount', String(amount))
       url.searchParams.set('type', type)

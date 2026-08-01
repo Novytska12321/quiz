@@ -10,8 +10,14 @@ export type GameUiState = 'loading' | 'ready' | 'answered' | 'error'
 
 export function useGameViewModel() {
   const navigate = useNavigate()
-  const { data: questions, isPending, isError, error, refetch, isFetching } =
-    useTriviaQuery()
+  const {
+    data: questions,
+    isPending,
+    isError,
+    error,
+    refetch,
+    isFetching,
+  } = useTriviaQuery()
 
   const [currentIndex, setCurrentIndex] = useState(0)
   const [score, setScore] = useState(0)
@@ -65,7 +71,10 @@ export function useGameViewModel() {
       const isLast = currentIndex >= (questions?.length ?? QUESTIONS_TOTAL) - 1
       if (isLast) {
         navigate('/result', {
-          state: { score: nextScore, total: QUESTIONS_TOTAL } satisfies ResultLocationState,
+          state: {
+            score: nextScore,
+            total: QUESTIONS_TOTAL,
+          } satisfies ResultLocationState,
         })
         return
       }
@@ -94,7 +103,8 @@ export function useGameViewModel() {
     score,
     selectedAnswer,
     isCorrect,
-    errorMessage: error instanceof Error ? error.message : 'Something went wrong.',
+    errorMessage:
+      error instanceof Error ? error.message : 'Something went wrong.',
     answerQuestion,
     quit,
     retry,

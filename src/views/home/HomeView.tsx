@@ -5,7 +5,9 @@ export function HomeView() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-slate-900 px-6 text-center">
-      <h1 className="text-5xl font-bold tracking-tight text-white sm:text-6xl">Quiz</h1>
+      <h1 className="text-5xl font-bold tracking-tight text-white sm:text-6xl">
+        Quiz
+      </h1>
       <p className="max-w-md text-lg text-slate-300">
         Five true or false questions. How many can you get right?
       </p>
