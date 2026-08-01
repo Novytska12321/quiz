@@ -14,11 +14,11 @@ Stack: React 19, Vite, TypeScript, React Router, Tailwind. Deployed under `base:
 
 ### Routes
 
-| Path       | View          | Purpose                                      |
-| ---------- | ------------- | -------------------------------------------- |
-| `/`        | `HomeView`    | App title + start CTA                        |
-| `/game`    | `GameView`    | Fetch and play the quiz                      |
-| `/result`  | `ResultView`  | Show final score and next actions            |
+| Path      | View         | Purpose                           |
+| --------- | ------------ | --------------------------------- |
+| `/`       | `HomeView`   | App title + start CTA             |
+| `/game`   | `GameView`   | Fetch and play the quiz           |
+| `/result` | `ResultView` | Show final score and next actions |
 
 Add `/result` in `src/app/App.tsx`. Import Views only via their public `index.ts` barrels.
 
@@ -53,13 +53,13 @@ Add `/result` in `src/app/App.tsx`. Import Views only via their public `index.ts
 
 ### Game states (Game View)
 
-| State      | When                                      | UI / behavior                                      |
-| ---------- | ----------------------------------------- | -------------------------------------------------- |
-| Loading    | Questions request in flight               | Loading indicator; no answer controls              |
-| Ready      | Questions loaded; awaiting / mid-quiz     | Question, progress, score, True/False, Quit        |
-| Answered   | User just selected an answer              | Feedback; buttons disabled; auto-advance in 3s     |
-| Error      | Request failed or non-success API code    | Error message + **Retry**                          |
-| Complete   | All 5 answered and feedback delay done    | Navigate to `/result` (Result is the end screen)   |
+| State    | When                                   | UI / behavior                                    |
+| -------- | -------------------------------------- | ------------------------------------------------ |
+| Loading  | Questions request in flight            | Loading indicator; no answer controls            |
+| Ready    | Questions loaded; awaiting / mid-quiz  | Question, progress, score, True/False, Quit      |
+| Answered | User just selected an answer           | Feedback; buttons disabled; auto-advance in 3s   |
+| Error    | Request failed or non-success API code | Error message + **Retry**                        |
+| Complete | All 5 answered and feedback delay done | Navigate to `/result` (Result is the end screen) |
 
 ## UI / layout
 
@@ -92,11 +92,11 @@ Add `/result` in `src/app/App.tsx`. Import Views only via their public `index.ts
 
 Follow View module architecture (`.cursor/docs/frontend/react-module-architecture.md`):
 
-| Module                         | Suggested tier | Notes                                                                 |
-| ------------------------------ | -------------- | --------------------------------------------------------------------- |
-| `src/views/home/`              | Tier 0–1       | Presentational + navigate                                             |
-| `src/views/game/`              | Tier 2–3       | Trivia resource, query hook, view model; domain for score/advance if needed |
-| `src/views/result/`            | Tier 1         | Props/location state + actions; optional score-message helper         |
+| Module              | Suggested tier | Notes                                                                       |
+| ------------------- | -------------- | --------------------------------------------------------------------------- |
+| `src/views/home/`   | Tier 0–1       | Presentational + navigate                                                   |
+| `src/views/game/`   | Tier 2–3       | Trivia resource, query hook, view model; domain for score/advance if needed |
+| `src/views/result/` | Tier 1         | Props/location state + actions; optional score-message helper               |
 
 - Dependency direction: UI → hooks/context → infrastructure → domain → api.
 - Prefer TanStack Query for the questions fetch; UI state (current index, selected answer, score, feedback) in a Game view-model hook.
