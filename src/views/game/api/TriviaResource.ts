@@ -1,8 +1,9 @@
-import type { Question } from './Question'
+import type { Difficulty, Question } from './Question'
 
 export type FetchQuestionsParams = {
   amount: number
   type?: 'multiple' | 'boolean'
+  difficulty?: Difficulty
   signal?: AbortSignal
 }
 

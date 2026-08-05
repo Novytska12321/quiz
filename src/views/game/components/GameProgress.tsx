@@ -2,18 +2,29 @@ type GameProgressProps = {
   current: number
   total: number
   score: number
+  levelLabel: string
 }
 
-export function GameProgress({ current, total, score }: GameProgressProps) {
+export function GameProgress({
+  current,
+  total,
+  score,
+  levelLabel,
+}: GameProgressProps) {
   return (
-    <div className="mb-6 flex items-center justify-between text-sm text-slate-300">
-      <p>
-        Question <span className="font-semibold text-white">{current}</span>/
-        {total}
+    <div className="mb-6 space-y-2 text-sm text-slate-300">
+      <p className="text-base font-semibold tracking-wide text-sky-300">
+        Level: {levelLabel}
       </p>
-      <p>
-        Score <span className="font-semibold text-white">{score}</span>
-      </p>
+      <div className="flex items-center justify-between">
+        <p>
+          Question <span className="font-semibold text-white">{current}</span>/
+          {total}
+        </p>
+        <p>
+          Score <span className="font-semibold text-white">{score}</span>
+        </p>
+      </div>
     </div>
   )
 }

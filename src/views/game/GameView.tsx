@@ -8,6 +8,8 @@ function GameScreen() {
   const {
     uiState,
     currentQuestion,
+    currentLevelLabel,
+    loadingLevelLabel,
     progressCurrent,
     progressTotal,
     score,
@@ -36,13 +38,18 @@ function GameScreen() {
         </header>
 
         {uiState === 'loading' && (
-          <div className="flex min-h-64 items-center justify-center">
-            <p className="text-lg text-slate-300">Loading questions…</p>
+          <div className="flex min-h-64 flex-col items-center justify-center gap-2 text-center">
+            <p className="text-lg text-slate-300">
+              Loading {loadingLevelLabel} questions…
+            </p>
           </div>
         )}
 
         {uiState === 'error' && (
           <div className="flex min-h-64 flex-col items-center justify-center gap-4 text-center">
+            <p className="text-sm font-medium text-sky-300">
+              Level: {currentLevelLabel}
+            </p>
             <p className="text-lg text-rose-300">{errorMessage}</p>
             <button
               type="button"
@@ -60,6 +67,7 @@ function GameScreen() {
               current={progressCurrent}
               total={progressTotal}
               score={score}
+              levelLabel={currentLevelLabel}
             />
             <p className="text-2xl leading-relaxed font-medium text-balance">
               {currentQuestion.question}
