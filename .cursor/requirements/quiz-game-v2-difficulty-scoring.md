@@ -16,10 +16,10 @@ Stack: React 19, Vite, TypeScript, React Router, Tailwind. Deployed under `base:
 
 ### Level structure
 
-| Level | Difficulty | Questions | When fetched |
-| ----- | ---------- | --------- | ------------ |
-| 1     | `easy`     | 5         | On Game enter / restart (same as today for the first fetch) |
-| 2     | `medium`   | 5         | After the player finishes level 1 (last easy question’s feedback delay completes) |
+| Level | Difficulty | Questions | When fetched                                                                        |
+| ----- | ---------- | --------- | ----------------------------------------------------------------------------------- |
+| 1     | `easy`     | 5         | On Game enter / restart (same as today for the first fetch)                         |
+| 2     | `medium`   | 5         | After the player finishes level 1 (last easy question’s feedback delay completes)   |
 | 3     | `hard`     | 5         | After the player finishes level 2 (last medium question’s feedback delay completes) |
 
 - **Total questions per game:** 15.
@@ -75,13 +75,13 @@ Unchanged from v1: title + **Start Quiz** → `/game`.
 
 ### Game states (Game View)
 
-| State    | When                                                         | UI / behavior                                                                 |
-| -------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------- |
-| Loading  | Any level request in flight (initial or between levels)      | Loading indicator; no answer controls; prefer showing upcoming/current level  |
-| Ready    | Current level loaded; awaiting / mid-quiz                    | **Current level label**, question, progress `n/15`, points score, True/False, Quit |
-| Answered | User just selected an answer                                 | Feedback; buttons disabled; auto-advance in 3s; **current level still visible** |
-| Error    | Current level request failed or non-success API `response_code` | Error message + **Retry** (retry current level only)                       |
-| Complete | All 15 answered and last feedback delay done                 | Navigate to `/result`                                                         |
+| State    | When                                                            | UI / behavior                                                                      |
+| -------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Loading  | Any level request in flight (initial or between levels)         | Loading indicator; no answer controls; prefer showing upcoming/current level       |
+| Ready    | Current level loaded; awaiting / mid-quiz                       | **Current level label**, question, progress `n/15`, points score, True/False, Quit |
+| Answered | User just selected an answer                                    | Feedback; buttons disabled; auto-advance in 3s; **current level still visible**    |
+| Error    | Current level request failed or non-success API `response_code` | Error message + **Retry** (retry current level only)                               |
+| Complete | All 15 answered and last feedback delay done                    | Navigate to `/result`                                                              |
 
 ## UI / layout
 
@@ -95,11 +95,11 @@ Unchanged from v1: title + **Start Quiz** → `/game`.
 - **API:** Open Trivia DB — see `.cursor/docs/integrations/open-trivia-db.md`.
 - **Requests per game (success path):**
 
-  | Level  | Example query |
-  | ------ | ------------- |
-  | Easy   | `GET .../api.php?amount=5&type=boolean&difficulty=easy` |
+  | Level  | Example query                                             |
+  | ------ | --------------------------------------------------------- |
+  | Easy   | `GET .../api.php?amount=5&type=boolean&difficulty=easy`   |
   | Medium | `GET .../api.php?amount=5&type=boolean&difficulty=medium` |
-  | Hard   | `GET .../api.php?amount=5&type=boolean&difficulty=hard` |
+  | Hard   | `GET .../api.php?amount=5&type=boolean&difficulty=hard`   |
 
 - Access only through the Game View `TriviaResource` port. Extend the port/query params so `difficulty` is supported (v1 had no difficulty filter).
 - Validate `response_code`; non-zero → Error for the current level.
@@ -121,11 +121,11 @@ Unchanged from v1: title + **Start Quiz** → `/game`.
 
 Follow View module architecture (`.cursor/docs/frontend/react-module-architecture.md`):
 
-| Module              | Suggested tier | Notes                                                                 |
-| ------------------- | -------------- | --------------------------------------------------------------------- |
-| `src/views/home/`   | Tier 0–1       | Unchanged                                                             |
-| `src/views/game/`   | Tier 3         | Multi-level fetch flow + domain scoring rules                         |
-| `src/views/result/` | Tier 1         | Consume points/`total` max; update score-message bands for max 60     |
+| Module              | Suggested tier | Notes                                                             |
+| ------------------- | -------------- | ----------------------------------------------------------------- |
+| `src/views/home/`   | Tier 0–1       | Unchanged                                                         |
+| `src/views/game/`   | Tier 3         | Multi-level fetch flow + domain scoring rules                     |
+| `src/views/result/` | Tier 1         | Consume points/`total` max; update score-message bands for max 60 |
 
 - Domain helpers for point values and max score belong in Game (and/or shared only if Result also needs the constants without duplicating magic numbers).
 - Prefer TanStack Query (or equivalent hook orchestration) for each level fetch; view-model owns level index, question index within the game, selected answer, points, and transitions between levels.
