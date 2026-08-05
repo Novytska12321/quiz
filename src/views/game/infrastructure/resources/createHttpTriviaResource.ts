@@ -20,11 +20,15 @@ export function createHttpTriviaResource(): TriviaResource {
     async getQuestions({
       amount,
       type = 'boolean',
+      difficulty,
       signal,
     }: FetchQuestionsParams) {
       const url = new URL(OPENTDB_BASE_URL)
       url.searchParams.set('amount', String(amount))
       url.searchParams.set('type', type)
+      if (difficulty) {
+        url.searchParams.set('difficulty', difficulty)
+      }
 
       const response = await fetch(url, { signal })
       if (!response.ok) {
