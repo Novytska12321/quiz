@@ -6,14 +6,30 @@ import tailwindcss from '@tailwindcss/vite'
 
 const projectRoot = path.dirname(fileURLToPath(import.meta.url))
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  // GitHub Pages uses /quiz/; Vercel serves the app from the domain root.
-  base: process.env.VERCEL ? '/' : '/quiz/',
+  base: '/',
   resolve: {
     alias: {
       '@': path.resolve(projectRoot, './src'),
+    },
+  },
+  server: {
+    watch: {
+      usePolling: true,
+      interval: 50,
+      awaitWriteFinish: {
+        stabilityThreshold: 50,
+        pollInterval: 50,
+      },
+    },
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        quietDeps: true,
+        silenceDeprecations: ['import'],
+      },
     },
   },
 })
