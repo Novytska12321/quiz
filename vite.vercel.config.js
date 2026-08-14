@@ -1,7 +1,7 @@
-import { defineConfig } from "vite";
+import { defineConfig } from 'vite'
 
 export default defineConfig({
-  base: "/",
+  base: '/',
   server: {
     watch: {
       usePolling: true,
@@ -16,8 +16,8 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         quietDeps: true,
-        silenceDeprecations: ["import"],
+        silenceDeprecations: ['import'],
       },
     },
   },
-});
+})
