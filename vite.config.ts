@@ -9,8 +9,8 @@ const projectRoot = path.dirname(fileURLToPath(import.meta.url))
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  // GitHub Pages: https://<USERNAME>.github.io/quiz/
-  base: '/quiz/',
+  // GitHub Pages uses /quiz/; Vercel serves the app from the domain root.
+  base: process.env.VERCEL ? '/' : '/quiz/',
   resolve: {
     alias: {
       '@': path.resolve(projectRoot, './src'),

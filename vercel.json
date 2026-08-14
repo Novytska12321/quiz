@@ -1,7 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npx tsc -b && npx vite build --config vite.vercel.config.js",
-  "outputDirectory": "dist",
   "rewrites": [
     {
       "source": "/(.*)",
